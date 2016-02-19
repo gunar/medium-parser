@@ -1,0 +1,31 @@
+{
+  "name": "medium-parser",
+  "version": "0.0.1",
+  "description": "Parse Medium posts to Markdown",
+  "main": "./lib/index.js",
+  "dependencies": {
+    "cheerio": "^0.20.0"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-es2015-loose": "^7.0.0",
+    "babel-preset-stage-0": "^6.3.13"
+  },
+  "scripts": {
+    "test": "TODO",
+    "watch": "./node_modules/.bin/babel lib/src/index.js --out-file lib/index.js --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:gunar/medium-parser.git"
+  },
+  "keywords": [
+    "medium",
+    "parse",
+    "parser",
+    "parsing",
+    "markdown"
+  ],
+  "author": "Gunar C. Gessner <gunar@gunargessner.com> (gunargessner.com)",
+  "license": "MIT"
+}
