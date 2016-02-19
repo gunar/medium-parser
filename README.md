@@ -6,10 +6,18 @@ A simple parser for Medium (html) into Markdown.
 
 `npm install medium-parser`
 
-and then
+then
 
-```
-// TODO:
+```js
+var parse = require('medium-parser');
+
+var post = parse(htmlAsString);
+/*
+  post == {
+    title: 'Post title',
+    markdown: '# Markdown\nAs string...',
+  }
+*/
 ```
 
 ## License
