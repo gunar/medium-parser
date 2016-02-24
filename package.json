@@ -18,10 +18,10 @@
     "tape": "^4.4.0"
   },
   "scripts": {
-    "build": "./node_modules/.bin/babel lib/src/ --out-dir lib/",
+    "build": "./node_modules/.bin/babel src/ --out-dir lib/",
     "watch": "npm run build -- --watch",
     "test": "npm run build && ./node_modules/.bin/tape \"lib/tests/index.js\"",
-    "test:watch": "nodemon --exec 'npm test' -w lib/src/",
+    "test:watch": "nodemon --exec 'npm test' -w src/",
     "prepublish": "npm run build"
   },
   "repository": {
