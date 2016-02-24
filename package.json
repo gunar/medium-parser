@@ -20,7 +20,7 @@
   "scripts": {
     "build": "./node_modules/.bin/babel lib/src/ --out-dir lib/",
     "watch": "npm run build -- --watch",
-    "test": "npm run build && ./node_modules/.bin/tape \"lib/tests/**/*.js\"",
+    "test": "npm run build && ./node_modules/.bin/tape \"lib/tests/index.js\"",
     "test:watch": "nodemon --exec 'npm test' -w lib/src/",
     "prepublish": "npm run build"
   },
