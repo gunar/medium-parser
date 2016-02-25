@@ -1,5 +1,6 @@
 src
 mocks
+lib/tests
 
 .*
 !.npmignore
