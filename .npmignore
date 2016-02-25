@@ -1,2 +1,5 @@
 src
 mocks
+
+.*
+!.npmignore
