@@ -75,6 +75,9 @@
         if (['figure', 'div', 'figcaption'].indexOf(el.name) > -1) {
           return `\n${processed}`;
         }
+        if (el.name === 'pre') {
+            return `\n~~~\n${processed}\n~~~\n`;
+        }
         console.log(`parse-medium: unprocessed tag <${el.name}>`);
         return `\n${processed}`;
       }
