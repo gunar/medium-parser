@@ -1,6 +1,6 @@
 {
   "name": "medium-parser",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Parse Medium posts to Markdown",
   "main": "./lib/index.js",
   "dependencies": {
