@@ -71,6 +71,14 @@ test('processing of html tags', t => {
   expected = '\n![Cool](http://google.com/secondDoodle.jpg)';
   t.equal(actual, expected, 'should accept <figure> and get second img b/c first is low-res');
 
+  html = `<pre>function add (a, b) {
+      return a + b;
+  }</pre>`;
+  actual = processElement(html);
+  expected = `\n~~~\nfunction add (a, b) {
+      return a + b;
+  }\n~~~\n`;
+  t.equal(actual, expected, 'should accept <pre>');
 
   t.end();
 });
@@ -85,7 +93,7 @@ test('processing the html of an medium post', t => {
   actual = parsed.markdown;
   expected = fs.readFileSync(path.resolve(__dirname, '../../mocks/dan.md'), 'utf-8');
   t.equal(actual, expected, 'should parse local article successfuly');
-  
+
   actual = parsed.title;
   expected = 'Presentational and Container Components';
   t.equal(actual, expected, 'should parse for title');
