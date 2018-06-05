@@ -1,95 +1,99 @@
-// https://github.com/umdjs/umd/blob/master/templates/nodeAdapter.js
-(function(define) {
-  define((require) => {
+import * as cheerio from 'cheerio';
+import processMedia from './processMedia';
 
-    const cheerio = require('cheerio');
+const processElement = element => new Promise((resolve, reject) => {
+  const $ = cheerio.load(element);
+  const el = $(element).get(0);
 
-    const processElement = element => {
-      const $ = cheerio.load(element);
-      const el = $(element).get(0);
-
-
-      if (el.type === 'text') {
-        const text = $(el).text();
-        const firstChar = text.substr(0, 1);
-        if (['*', '-'].indexOf(firstChar) > -1) {
-          return `\\${text}`;
-        }
-        return text;
+  if (el.type === 'text') {
+    const text = $(el).text();
+    const escaped = text.replace(/[#_*~><>/\\[\]!()`-]+/g, (symbol) => {
+      let output = '';
+      for (let i = 0; i < symbol.length; i += 1) {
+        output += `\\${symbol[i]}`;
       }
+      return output;
+    });
+    resolve(escaped);
+  } else if (el.type === 'tag') {
+    if (el.name === 'figure') {
+      if ($(el).has('iframe').length) {
+        const url = `https://medium.com${$(el).find('iframe').attr('src')}`;
+        processMedia(url)
+          .then((markdown) => { resolve(markdown); });
+      } else {
+        const caption = $(el).find('figcaption').text();
+        // last() because the first img is low res
+        const img = $('div > img').last();
+        const src = img.attr('data-src') || img.attr('src');
+        resolve(`\n![${caption}](${src})`);
+      }
+    } else if (el.name === 'pre') {
+      // pre tags should not have their contents escaped
+      resolve(`\n~~~\n${$(el).html()}\n~~~\n`);
+    } else {
+      // Can't use .map() because it mutates the element
+      const p = [];
+      $(el).contents().each((i, e) => {
+        p.push(processElement(e));
+      });
 
-      if (el.type === 'tag') {
+      Promise.all(p).then((results) => {
+        let processed = results.join('');
 
-        if (el.name === 'figure') {
-          const caption = $(el).find('figcaption').text();
-          // last() because the first img is low res
-          const src = $('div > img').last().attr('data-src');
-          return `\n![${caption}](${src})`;
-        }
-
-        // Can't use .map() because it mutates the element
-        const p = [];
-        $(el).contents().each((i, e) => {
-          p.push(processElement(e));
+        // Remove the leading and trailing whitespace from the inside of a tag
+        let leadingWhitespace = '';
+        let trailingWhitespace = '';
+        processed = processed.replace(/^\s+/g, (whitespace) => {
+          leadingWhitespace = whitespace;
+          return '';
         });
-        const processed = p.join('');
+        processed = processed.replace(/\s+$/g, (whitespace) => {
+          trailingWhitespace = whitespace;
+          return '';
+        });
 
-        // const processed = children.each((i, el) => processElement(el)).join('');
-
+        // Add the removed whitespace to the outside of inline elements
         if (el.name === 'em' || el.name === 'i') {
-          return `*${processed}*`;
-        }
-
-        if (el.name === 'strong' || el.name === 'b') {
-          return `**${processed}**`;
-        }
-
-        if (el.name === 'a') {
+          resolve(`${leadingWhitespace}*${processed}*${trailingWhitespace}`);
+        } else if (el.name === 'strong' || el.name === 'b') {
+          resolve(`${leadingWhitespace}**${processed}**${trailingWhitespace}`);
+        } else if (el.name === 'a') {
           const href = $(el).attr('href');
-          return `[${processed}](${href})`;
-        }
-
-        if (el.name === 'blockquote') {
-          return `\n> ${processed}`;
-        }
-
-        // TODO Finish refactoring
-
-        if (el.name === 'h4') return `\n## ${processed}`;
-        if (el.name === 'h3') return `\n# ${processed}`;
-        if (el.name === 'ul') {
-          return `\n${processed}`;
-        }
-        if (el.name === 'li') {
-          return `\n- ${processed}`;
-        }
-        if (el.name === 'p') {
-          return `\n\n${processed}`;
-        }
-        if (el.name === 'img') {
+          resolve(`${leadingWhitespace}[${processed}](${href})${trailingWhitespace}`);
+        } else if (el.name === 'blockquote') {
+          resolve(`\n> ${processed}`);
+        } else if (el.name === 'h4') {
+          resolve(`\n### ${processed}`);
+        } else if (el.name === 'h3') {
+          resolve(`\n## ${processed}`);
+        } else if (el.name === 'h1') {
+          resolve(`\n# ${processed}`);
+        } else if (el.name === 'ul') {
+          resolve(`\n\n${processed}`);
+        } else if (el.name === 'li') {
+          resolve(`\n- ${processed}`);
+        } else if (el.name === 'p') {
+          resolve(`\n\n${processed}`);
+        } else if (el.name === 'img') {
           const alt = $(el).attr('alt') || '';
           const src = $(el).attr('src');
-          return `![${alt}](${src})`;
+          resolve(`![${alt}](${src})`);
+        } else if (el.name === 'div') {
+          resolve(`\n${processed}`);
+        } else if (['figure', 'div', 'figcaption'].indexOf(el.name) > -1) {
+          resolve(`\n${processed}`);
+        } else {
+          console.log(`parse-medium: unprocessed tag <${el.name}>`);
+          resolve(`\n${processed}`);
         }
-        if (el.name === 'div') return `\n${processed}`;
-        if (['figure', 'div', 'figcaption'].indexOf(el.name) > -1) {
-          return `\n${processed}`;
-        }
-        if (el.name === 'pre') {
-            return `\n~~~\n${processed}\n~~~\n`;
-        }
-        console.log(`parse-medium: unprocessed tag <${el.name}>`);
-        return `\n${processed}`;
-      }
-      return el;
-    };
+      }).catch((err) => {
+        reject(err);
+      });
+    }
+  } else {
+    resolve(el);
+  }
+});
 
-    return processElement;
-
-  });
-
-}( // Help Node out by setting up define.
-  typeof module === 'object' && module.exports && typeof define !== 'function' ?
-    function (factory) { module.exports = factory(require, exports, module); } :
-      define
- ));
+export default processElement;

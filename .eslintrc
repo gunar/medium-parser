@@ -11,7 +11,7 @@
     // Temporarily disabled due to babel-eslint issues:
     "block-scoped-var": 0,
     "padded-blocks": 0,
-    "babel/object-shorthand": 1,
+    "object-shorthand": 1
   },
   "plugins": [
     "babel"
