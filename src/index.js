@@ -7,17 +7,12 @@
 
     const parseMedium = html => {
       const $ = cheerio.load(html);
-      const title = $('h1').first().text();
-      const headline = $('h2').first().text();
-      const author = $('meta[property=author]').attr("content");
-      const publishedTime = $('meta[property="article:published_time"]').attr("content");
+      const title = $('h3').first().text();
+      const content = $('.section-inner').html();
+      // const markdown = processElement(content);
       const markdown = $('.section-inner').contents().toArray().map(processElement).join('\n').replace(/\n\n\n/g,'\n\n');
-
       return {
         title,
-        headline,
-        author,
-        publishedTime,
         markdown,
       };
     };

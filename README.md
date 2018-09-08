@@ -15,18 +15,9 @@ var post = parse(htmlAsString);
 /*
   post == {
     title: 'Post title',
-    headline: 'Headline from h2 tag',
-    author: 'Some author',
-    publishedTime: '2016-09-19T21:30:45.266Z',
     markdown: '# Markdown\nAs string...',
   }
 */
-```
-
-## Unit test
-
-```
-npm run test
 ```
 
 ## License
