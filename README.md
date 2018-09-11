@@ -9,7 +9,7 @@ A parser for Medium articles (html) into Markdown.
 then
 
 ```js
-import parse from 'medium-parser';
+const parse = require('medium-parser');
 
 parse(htmlAsString).then(post => {
   /*

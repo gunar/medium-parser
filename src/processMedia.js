@@ -1,8 +1,8 @@
-import * as cheerio from 'cheerio';
-import fetch from 'node-fetch';
-import processGist from './processors/processGist';
+const cheerio = require('cheerio');
+const fetch = require('node-fetch');
+const processGist = require('./processors/processGist');
 
-const processMedia = url => new Promise((resolve, reject) => {
+const processMedia = async url =>
   fetch(url)
     .then(resp => resp.text())
     .then((html) => {
@@ -10,14 +10,10 @@ const processMedia = url => new Promise((resolve, reject) => {
       if ($('html').has('script[src^="https://gist.github.com/"]').length) { // Github Gist
         // Extract the Gist's ID:
         const gistId = $('body > script').attr('src').replace(/^.*[\\/]/, '').replace(/\.js$/, '');
-        processGist(gistId)
-          .then((markdown) => { resolve(markdown); });
-      } else {
-        // Resolve the empty string with a line break if the medium type is not known
-        resolve('\n');
+        return processGist(gistId)
       }
-    })
-    .catch(err => reject(err));
-});
+      // If media type is unknown, return line break
+      return '\n';
+    });
 
-export default processMedia;
+module.exports = processMedia;

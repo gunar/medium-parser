@@ -1,6 +1,6 @@
-import fetch from 'node-fetch';
+const fetch = require('node-fetch');
 
-const processGist = gistId => new Promise((resolve, reject) => {
+const processGist = gistId =>
   fetch(`https://api.github.com/gists/${gistId}`)
     .then(resp => resp.json())
     .then((json) => {
@@ -9,9 +9,7 @@ const processGist = gistId => new Promise((resolve, reject) => {
         const file = json.files[Object.keys(json.files)[i]];
         markdown += `\n~~~${file.language}\n${file.content}\n~~~\n`;
       }
-      resolve(markdown);
+      return markdown;
     })
-    .catch(err => reject(err));
-});
 
-export default processGist;
+module.exports = processGist;
