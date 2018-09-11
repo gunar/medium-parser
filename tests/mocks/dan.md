@@ -1,5 +1,5 @@
 
-Presentational and Container Components
+# Presentational and Container Components
 
 ![Bismuth](https://cdn-images-1.medium.com/max/1600/1*TatfeANQMBmjrk_nhKbZoA.jpeg)
 
@@ -31,7 +31,7 @@ My **container** components:
 
 I put them in different folders to make this distinction clear.
 
-### Benefits of This Approach
+### Benefits of This Approach
 
 - Better separation of concerns. You understand your app and your UI better by writing components this way.
 - Better reusability. You can use the same presentational component with completely different state sources, and turn those into separate container components that can be further reused.
