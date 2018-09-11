@@ -52,8 +52,23 @@ test('processing of html tags', async (t) => {
   t.equal(await processElement(html), expected, message);
 
   html = '<h4>Subtitle</h4>';
-  expected = '\n### Subtitle';
+  expected = '\n#### Subtitle';
   message = 'should accept <h4>';
+  t.equal(await processElement(html), expected, message);
+
+  html = '<h3>Subtitle</h3>';
+  expected = '\n### Subtitle';
+  message = 'should accept <h3>';
+  t.equal(await processElement(html), expected, message);
+
+  html = '<h2>Subtitle</h2>';
+  expected = '\n## Subtitle';
+  message = 'should accept <h2>';
+  t.equal(await processElement(html), expected, message);
+
+  html = '<h1>Subtitle</h1>';
+  expected = '\n# Subtitle';
+  message = 'should accept <h1>';
   t.equal(await processElement(html), expected, message);
 
   html = '<ul><li>Item 1</li><li>Item 2</li></ul>';
@@ -101,65 +116,65 @@ test('processing the html of a medium post with Gists', (t) => {
     t.equal(post.title, 'Tips to optimise rendering of a set of elements in React', 'should parse for title');
   });
 });
-//
-// test('author - get author from new html you-might-not-need-redux.html', async (t) => {
-//   let actual;
-//   let expected;
-//
-//   const html = fs.readFileSync(path.resolve(__dirname, './mocks/you-might-not-need-redux.html'), 'utf-8');
-//   const parsed = await parse(html);
-//
-//   actual = parsed.markdown;
-//   expected = fs.readFileSync(path.resolve(__dirname, './mocks/you-might-not-need-redux.md'), 'utf-8');
-//   t.equal(actual, expected, 'should parse local article successfuly');
-//
-//   actual = parsed.title;
-//   expected = 'You Might Not Need Redux';
-//   t.equal(actual, expected, 'should parse for title');
-//
-//   actual = parsed.headline;
-//   expected = '';
-//   t.equal(actual, expected, 'should parse for headline');
-//
-//   actual = parsed.author;
-//   expected = 'Dan Abramov';
-//   t.equal(actual, expected, 'should parse for author');
-//
-//   actual = parsed.publishedTime;
-//   expected = '2016-09-19T21:30:45.266Z';
-//   t.equal(actual, expected, 'should parse for publishedTime');
-//
-//   t.end();
-// });
-//
-// test('all Info - from html balancing-heuristics-and-data.html with headline', async (t) => {
-//   let actual;
-//   let expected;
-//
-//   const html = fs.readFileSync(path.resolve(__dirname, './mocks/balancing-heuristics-and-data.html'), 'utf-8');
-//   const parsed = await parse(html);
-//
-//   actual = parsed.markdown;
-//
-//   expected = fs.readFileSync(path.resolve(__dirname, './mocks/balancing-heuristics-and-data.md'), 'utf-8');
-//
-//   t.equal(actual, expected, 'should parse local article successfuly');
-//
-//   actual = parsed.title;
-//   expected = 'Balancing heuristics and data';
-//   t.equal(actual, expected, 'should parse for title');
-//
-//   actual = parsed.headline;
-//   expected = 'Why a focus purely on data can miss the big picture';
-//   t.equal(actual, expected, 'should parse for headline');
-//
-//   actual = parsed.author;
-//   expected = 'Skyscanner Engineering';
-//   t.equal(actual, expected, 'should parse for author');
-//
-//   actual = parsed.publishedTime;
-//   expected = '2018-08-08T06:25:00.561Z';
-//   t.equal(actual, expected, 'should parse for publishedTime');
-//
-//   t.end();
-// });
+
+test('author - get author from new html you-might-not-need-redux.html', async (t) => {
+  let actual;
+  let expected;
+
+  const html = fs.readFileSync(path.resolve(__dirname, './mocks/you-might-not-need-redux.html'), 'utf-8');
+  const parsed = await parse(html);
+
+  actual = parsed.markdown;
+  expected = fs.readFileSync(path.resolve(__dirname, './mocks/you-might-not-need-redux.md'), 'utf-8');
+  t.equal(actual, expected, 'should parse local article successfuly');
+
+  actual = parsed.title;
+  expected = 'You Might Not Need Redux';
+  t.equal(actual, expected, 'should parse for title');
+
+  actual = parsed.headline;
+  expected = '';
+  t.equal(actual, expected, 'should parse for headline');
+
+  actual = parsed.author;
+  expected = 'Dan Abramov';
+  t.equal(actual, expected, 'should parse for author');
+
+  actual = parsed.publishedTime;
+  expected = '2016-09-19T21:30:45.266Z';
+  t.equal(actual, expected, 'should parse for publishedTime');
+
+  t.end();
+});
+
+test('all Info - from html balancing-heuristics-and-data.html with headline', async (t) => {
+  let actual;
+  let expected;
+
+  const html = fs.readFileSync(path.resolve(__dirname, './mocks/balancing-heuristics-and-data.html'), 'utf-8');
+  const parsed = await parse(html);
+
+  actual = parsed.markdown;
+
+  expected = fs.readFileSync(path.resolve(__dirname, './mocks/balancing-heuristics-and-data.md'), 'utf-8');
+
+  t.equal(actual, expected, 'should parse local article successfuly');
+
+  actual = parsed.title;
+  expected = 'Balancing heuristics and data';
+  t.equal(actual, expected, 'should parse for title');
+
+  actual = parsed.headline;
+  expected = 'Why a focus purely on data can miss the big picture';
+  t.equal(actual, expected, 'should parse for headline');
+
+  actual = parsed.author;
+  expected = 'Skyscanner Engineering';
+  t.equal(actual, expected, 'should parse for author');
+
+  actual = parsed.publishedTime;
+  expected = '2018-08-08T06:25:00.561Z';
+  t.equal(actual, expected, 'should parse for publishedTime');
+
+  t.end();
+});

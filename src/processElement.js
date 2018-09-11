@@ -68,9 +68,12 @@ const processElement = async element => {
           return `\n> ${processed}`;
         }
         if (el.name === 'h4') {
-          return `\n### ${processed}`;
+          return `\n#### ${processed}`;
         }
         if (el.name === 'h3') {
+          return `\n### ${processed}`;
+        }
+        if (el.name === 'h2') {
           return `\n## ${processed}`;
         }
         if (el.name === 'h1') {
